@@ -1,20 +1,16 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using System.Globalization;
-
-// Create lists
+﻿// Create lists
 var leftList = new List<int>();
 var rightList = new List<int>();
 
-using (var reader = new StreamReader("input.csv"))
-using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false }))
+using (var file = new StreamReader("input.txt"))
 {
-    var records = csv.GetRecords<Tuple<int, int>>();
+    string? record;
 
-    foreach (var record in records)
+    while ((record = file.ReadLine()) != null)
     {
-        leftList.Add(record.Item1);
-        rightList.Add(record.Item2);
+        var items = record.Split("   ").Select(x => int.Parse(x)).ToList();
+        leftList.Add(items[0]);
+        rightList.Add(items[1]);
     }
 }
 
