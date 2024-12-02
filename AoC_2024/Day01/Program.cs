@@ -2,15 +2,14 @@
 using CsvHelper.Configuration;
 using System.Globalization;
 
-// Part One
-IEnumerable<Tuple<int, int>> records;
+// Create lists
 var leftList = new List<int>();
 var rightList = new List<int>();
 
 using (var reader = new StreamReader("input.csv"))
 using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false }))
 {
-    records = csv.GetRecords<Tuple<int, int>>();
+    var records = csv.GetRecords<Tuple<int, int>>();
 
     foreach (var record in records)
     {
@@ -19,6 +18,7 @@ using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.Invarian
     }
 }
 
+// Part One
 leftList.Sort();
 rightList.Sort();
 
