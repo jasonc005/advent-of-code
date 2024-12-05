@@ -3,7 +3,7 @@
 var exit = false;
 do
 {
-    Console.Write("\nSelect Day: ");
+    Console.Write("Select Day: ");
     var day = Console.ReadLine();
 
     switch (day)
@@ -19,5 +19,7 @@ do
         default:
             exit = true; break;
     }
+
+    Console.WriteLine();
 
 } while (!exit);

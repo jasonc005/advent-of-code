@@ -2,12 +2,18 @@
 {
     public static class Day01
     {
+        private static readonly List<int> leftList = [];
+        private static readonly List<int> rightList = [];
+
         public static void Run()
         {
-            // Create lists
-            var leftList = new List<int>();
-            var rightList = new List<int>();
+            CreateLists();
+            DoPart1();
+            DoPart2();
+        }
 
+        private static void CreateLists()
+        {
             using (var file = new StreamReader("Input/day01_input.txt"))
             {
                 string? record;
@@ -19,8 +25,10 @@
                     rightList.Add(items[1]);
                 }
             }
+        }
 
-            // Part One
+        private static void DoPart1()
+        {
             leftList.Sort();
             rightList.Sort();
 
@@ -32,8 +40,10 @@
             }
 
             Console.WriteLine($"Total Distance: {totalDistance}");
+        }
 
-            // Part Two
+        private static void DoPart2()
+        {
             var similarityScore = 0;
 
             foreach (var leftItem in leftList)
