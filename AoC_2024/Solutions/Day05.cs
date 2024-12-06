@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 
 namespace AoC_2024.Solutions
 {
@@ -12,14 +13,26 @@ namespace AoC_2024.Solutions
             LoadInput();
 
             var medianTotal = 0;
+            var invalidUpdates = new List<string[]>();
+
             foreach (var update in updates)
             {
                 if (IsUpdateValid(update))
-                {
                     medianTotal += GetMedianValue(update);
-                }
+                else
+                    invalidUpdates.Add(update);
             }
+
             Console.WriteLine($"Sum of Valid Medians: {medianTotal}");
+
+            var fixedMedianTotal = 0;
+            foreach (var update in invalidUpdates)
+            {
+                Array.Sort(update, new PageComparer());
+                fixedMedianTotal += GetMedianValue(update);
+            }
+
+            Console.WriteLine($"Sum of Fixed Medians: {fixedMedianTotal}");
         }
 
         private static void LoadInput()
@@ -45,7 +58,6 @@ namespace AoC_2024.Solutions
         private static bool IsUpdateValid(string[] update)
         {
             foreach (var page in update)
-            {
                 foreach (var rule in rules.Where(rule => rule.Contains(page)))
                 {
                     var ruleParts = rule.Split('|');
@@ -61,7 +73,7 @@ namespace AoC_2024.Solutions
                         return false;
                     }
                 }
-            }
+
             return true;
         }
 
@@ -71,6 +83,24 @@ namespace AoC_2024.Solutions
                 return int.Parse(data[data.Length / 2]);
             else
                 return int.Parse(data[(data.Length - 1) / 2]);
+        }
+
+        private class PageComparer : IComparer<string>
+        {
+            public int Compare(string? x, string? y)
+            {
+                if (x == y) return 0;
+
+                foreach (var rule in rules.Where(rule => rule.Contains(x ?? " ")))
+                {
+                    if (rule.Contains(y ?? " "))
+                    {
+                        return rule.Split('|')[0] == x ? -1 : 1;
+                    }
+                }
+
+                return 0;
+            }
         }
     }
 }
