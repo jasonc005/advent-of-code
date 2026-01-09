@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace _2025_CSharp.Solutions;
 
 // Puzzle instructions: https://adventofcode.com/2025/day/1
@@ -11,24 +13,13 @@ public static class Day01
 
     public static void Run()
     {
-        Part1();
-    }
-
-    private static void Part1()
-    {
         var currentNumber = StartingNumber;
-        var dialAtZeroCount = 0;
-        
-        using var reader = new StreamReader(InputFile);
+        var part1Count = 0;
 
-        string record;
-        while ((record = reader.ReadLine() ?? "") != "")
+        foreach ((char direction, int distance) instruction in GetInstructions())
         {
-            var direction = record[0];
-            var distance = int.Parse(record.Substring(1));
-            
-            if (direction == 'L') currentNumber -= distance;
-            else if (direction == 'R') currentNumber += distance;
+            if (instruction.direction == 'L') currentNumber -= instruction.distance;
+            else if (instruction.direction == 'R') currentNumber += instruction.distance;
 
             while (currentNumber is < MinNumber or > MaxNumber)
             {
@@ -36,9 +27,18 @@ public static class Day01
                 else currentNumber += RangeLength;
             }
             
-            if (currentNumber == 0) dialAtZeroCount++;
+            if (currentNumber == 0) part1Count++;
         }
         
-        Console.WriteLine($"Password: {dialAtZeroCount}");
+        Console.WriteLine($"Part 1 Password: {part1Count}");
+    }
+    
+    private static IEnumerable<(char direction, int distance)> GetInstructions()
+    {
+        using var reader = new StreamReader(InputFile);
+        while (reader.ReadLine() is { } record)
+        {
+            yield return (record[0], int.Parse(record.Substring(1)));
+        }
     }
 }
