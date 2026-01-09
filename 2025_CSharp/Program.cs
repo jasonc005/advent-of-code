@@ -10,6 +10,8 @@ do
     {
         case "1":
             Day01.Run(); break;
+        case "2":
+            Day02.Run(); break;
         default:
             exit = true; break;
     }
