@@ -7,52 +7,46 @@ public static class Day02
 
     public static void Run()
     {
-        var idRanges = GetIdRanges().ToList();
+        var idRanges = GetIdRanges();
+        var solutions = GetSolutions(idRanges);
         
-        Console.WriteLine($"Sum of Invalid IDs - Part 1: {GetPart1Solution(idRanges)}");
-        Console.WriteLine($"Sum of Invalid IDs - Part 2: {GetPart2Solution(idRanges)}");
+        Console.WriteLine($"Sum of Invalid IDs - Part 1: {solutions.Part1Solution}");
+        Console.WriteLine($"Sum of Invalid IDs - Part 2: {solutions.Part2Solution}");
     }
 
-    private static IEnumerable<string[]> GetIdRanges()
+    private static IEnumerable<(long start, long end)> GetIdRanges()
     {
-        using var reader = new StreamReader(InputFile);
-        var rangeList = reader.ReadToEnd();
-        return rangeList.Split(",").Select(x => x.Split("-"));
+        return File.ReadAllText(InputFile)
+            .Split(',')
+            .Select(range =>
+            {
+                var parts = range.Trim().Split('-');
+                return (long.Parse(parts[0]), long.Parse(parts[1]));
+            });
     }
-    
-    private static bool IsOdd(this int number) => number % 2 == 1;
-    
-    private static long GetPart1Solution(IEnumerable<string[]> idRanges)
+
+    private static (long Part1Solution, long Part2Solution) GetSolutions(IEnumerable<(long start, long end)> idRanges)
     {
-        long result = 0;
+        long part1Solution = 0;
+        long part2Solution = 0;
+        
         foreach (var range in idRanges)
         {
-            if (range[0].Length == range[1].Length && range[0].Length.IsOdd()) continue;
-
-            for (var i = long.Parse(range[0]); i <= long.Parse(range[1]); i++)
+            for (var i = range.start; i <= range.end; i++)
             {
-                var id = i.ToString();
-                if (id.Length.IsOdd()) continue;
-                
-                if (id[..(id.Length / 2)] == id[(id.Length / 2)..]) result += i;
+                var idString = i.ToString();
+                if (idString.IsInvalidIdPart1()) part1Solution += i;
+                if (idString.IsInvalidIdPart2()) part2Solution += i;
             }
         }
-        return result;
+        
+        return (part1Solution, part2Solution);
     }
 
-    private static long GetPart2Solution(IEnumerable<string[]> idRanges)
+    private static bool IsInvalidIdPart1(this string id)
     {
-        long result = 0;
-        // Loop through each range
-        foreach (var range in idRanges)
-        {
-            // Loop through each ID in range
-            for (var i = long.Parse(range[0]); i <= long.Parse(range[1]); i++)
-            {
-                if (i.ToString().IsInvalidIdPart2()) result += i;
-            }
-        }
-        return result;
+        if (id.Length % 2 == 1) return false;
+        return IsRepeatedPattern(id, id[..(id.Length / 2)], 2);
     }
     
     private static bool IsInvalidIdPart2(this string id)
@@ -72,7 +66,7 @@ public static class Day02
     
     private static bool IsRepeatedPattern(string id, string pattern, int expectedRepetitions)
     {
-        for (var i = 0; i < expectedRepetitions; i++)
+        for (var i = 1; i < expectedRepetitions; i++)
         {
             var startPos = i * pattern.Length;
             var endPos = startPos + pattern.Length;
@@ -80,5 +74,4 @@ public static class Day02
         }
         return true;
     }
-
 }
