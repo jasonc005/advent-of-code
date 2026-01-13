@@ -1,5 +1,6 @@
 namespace _2025_CSharp.Solutions;
 
+// Puzzle instructions: https://adventofcode.com/2025/day/3
 public static class Day03
 {
     private const string InputFile = "Input/day03_input.txt";
