@@ -9,15 +9,18 @@ public static class Day04
         var grid = GetGrid();
 
         var initialAccessibleRolls = GetInitialAccessibleRolls(grid);
-        Console.WriteLine($"Total Accessible Rolls: {initialAccessibleRolls}");
+        var allAccessibleRolls = GetAllAccessibleRolls(grid);
+        
+        Console.WriteLine($"Initial Accessible Rolls: {initialAccessibleRolls}");
+        Console.WriteLine($"All Accessible Rolls: {allAccessibleRolls}");
     }
     
-    private static string[] GetGrid()
+    private static char[][] GetGrid()
     {
-        return File.ReadAllLines(InputFile);
+        return File.ReadAllLines(InputFile).Select(row => row.ToCharArray()).ToArray();
     }
     
-    private static int GetInitialAccessibleRolls(string[] grid)
+    private static int GetInitialAccessibleRolls(char[][] grid)
     {
         var result = 0;
         for (var row = 0; row < grid.Length; row++)
@@ -31,7 +34,29 @@ public static class Day04
         return result;
     }
 
-    private static bool CanBeAccessed(int row, int col, string[] grid)
+    private static int GetAllAccessibleRolls(char[][] grid)
+    {
+        var passResult = 0;
+        for (var row = 0; row < grid.Length; row++)
+        {
+            for (var col = 0; col < grid[row].Length; col++)
+            {
+                if (!CanBeAccessed(row, col, grid)) continue;
+                grid[row][col] = 'x';
+                passResult++;
+            }
+        }
+
+        var totalResult = passResult;
+        if (passResult > 0)
+        {
+            totalResult += GetAllAccessibleRolls(grid);
+        }
+        
+        return totalResult;
+    }
+
+    private static bool CanBeAccessed(int row, int col, char[][] grid)
     {
         if (grid[row][col] != '@') return false;
 
@@ -54,6 +79,6 @@ public static class Day04
         (row + 1, col + 1)
     ];
     
-    private static bool IsInBounds(int row, int col, string[] grid) => 
+    private static bool IsInBounds(int row, int col, char[][] grid) => 
         row >= 0 && row < grid.Length && col >= 0 && col < grid[row].Length;
 }
