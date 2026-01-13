@@ -8,9 +8,11 @@ public static class Day03
     {
         var banks = GetBatteryBanks();
 
-        var totalOutputJoltage = banks.Sum(GetMaxJoltage);
+        var totalJoltage2Digits = banks.Sum(bank => GetMaxJoltage(bank, 2));
+        var totalJoltage12Digits = banks.Sum(bank => GetMaxJoltage(bank, 12));
 
-        Console.WriteLine($"Total Output Joltage: {totalOutputJoltage}");
+        Console.WriteLine($"Max 2-Digit Output Joltage: {totalJoltage2Digits}");
+        Console.WriteLine($"Max 12-Digit Output Joltage: {totalJoltage12Digits}");
     }
     
     private static string[] GetBatteryBanks()
@@ -18,29 +20,26 @@ public static class Day03
         return File.ReadAllLines(InputFile);
     }
 
-    // Finds the largest 2 digits in a given string of digits, without changing the order
-    private static int GetMaxJoltage(string bank)
+    private static long GetMaxJoltage(string bank, int digits)
     {
-        // Find largest digit x in 0..length-1
-        var firstDigit = '0';
-        var maxIndex = -1;
-        
-        for (var i = 0; i < bank.Length - 1; i++)
+        var result = "";
+        var remainingDigits = digits;
+        var startIndex = 0;
+
+        while (remainingDigits > 0)
         {
-            if (bank[i] <= firstDigit) continue;
-            firstDigit = bank[i];
-            maxIndex = i;
+            var largestDigit = '0';
+            
+            remainingDigits--;
+            for (var i = startIndex; i < bank.Length - remainingDigits; i++)
+            {
+                if (bank[i] <= largestDigit) continue;
+                largestDigit = bank[i];
+                startIndex = i + 1;
+            }
+            result += largestDigit;
         }
         
-        // Append largest digit from x..length
-        var secondDigit = '0';
-        
-        for (var i = maxIndex + 1; i < bank.Length; i++)
-        {
-            if (bank[i] <= secondDigit) continue;
-            secondDigit = bank[i];
-        }
-        
-        return int.Parse($"{firstDigit}{secondDigit}");
+        return long.Parse(result);
     }
 }
