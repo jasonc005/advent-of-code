@@ -16,6 +16,8 @@ do
             Day03.Run(); break;
         case "4":
             Day04.Run(); break;
+        case "5":
+            Day05.Run(); break;
         default:
             exit = true; break;
     }
