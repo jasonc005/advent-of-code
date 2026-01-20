@@ -1,9 +1,11 @@
+using _2025_CSharp.Helpers;
+
 namespace _2025_CSharp.Solutions;
 
 // Puzzle instructions: https://adventofcode.com/2025/day/5
 public static class Day05
 {
-    private const string InputFile = "Input/day05_input.txt";
+    private static readonly string InputFile = FileUtility.GetFilePathForDay(5);
 
     public static void Run()
     {

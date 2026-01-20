@@ -1,9 +1,11 @@
+using _2025_CSharp.Helpers;
+
 namespace _2025_CSharp.Solutions;
 
 // Puzzle instructions: https://adventofcode.com/2025/day/1
 public static class Day01
 {
-    private const string InputFile = "Input/day01_input.txt";
+    private static readonly string InputFile = FileUtility.GetFilePathForDay(1);
     private const int StartingNumber = 50;
     private const int MaxNumber = 99;
     private const int MinNumber = 0;
@@ -18,7 +20,7 @@ public static class Day01
         foreach ((char direction, int distance) instruction in GetInstructions())
         {
             var startPosition = currentNumber;
-            
+
             // Perform instructed movement
             if (instruction.direction == 'L') currentNumber -= instruction.distance;
             else if (instruction.direction == 'R') currentNumber += instruction.distance;
@@ -33,12 +35,12 @@ public static class Day01
             // Part 1: Count when we stop exactly at 0
             if (currentNumber == 0) part1Count++;
         }
-        
+
         Console.WriteLine($"Part 1 Password: {part1Count}");
         Console.WriteLine($"Part 2 Password: {part2Count}");
     }
 
-    
+
     private static IEnumerable<(char direction, int distance)> GetInstructions()
     {
         using var reader = new StreamReader(InputFile);
@@ -53,13 +55,13 @@ public static class Day01
         // Normalize to [0, RangeLength) then shift to [MinNumber, MaxNumber]
         return ((position - MinNumber) % RangeLength + RangeLength) % RangeLength + MinNumber;
     }
-    
+
     private static int CountZeroCrossings(int start, int end)
     {
         if (start == end) return 0;
         if (end == MinNumber) return 1;
         if (end is <= MaxNumber and >= MinNumber) return 0;
-        
+
         // Determine the range of positions we actually visit (excluding start)
         var minVisited = start < end ? start + 1 : end;
         var maxVisited = start < end ? end : start - 1;

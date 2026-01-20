@@ -1,9 +1,11 @@
+using _2025_CSharp.Helpers;
+
 namespace _2025_CSharp.Solutions;
 
 // Puzzle instructions: https://adventofcode.com/2025/day/4
 public static class Day04
 {
-    private const string InputFile = "Input/day04_input.txt";
+    private static readonly string InputFile = FileUtility.GetFilePathForDay(4);
 
     public static void Run()
     {
@@ -11,16 +13,16 @@ public static class Day04
 
         var initialAccessibleRolls = GetInitialAccessibleRolls(grid);
         var allAccessibleRolls = GetAllAccessibleRolls(grid);
-        
+
         Console.WriteLine($"Initial Accessible Rolls: {initialAccessibleRolls}");
         Console.WriteLine($"All Accessible Rolls: {allAccessibleRolls}");
     }
-    
+
     private static char[][] GetGrid()
     {
         return File.ReadAllLines(InputFile).Select(row => row.ToCharArray()).ToArray();
     }
-    
+
     private static int GetInitialAccessibleRolls(char[][] grid)
     {
         var result = 0;
@@ -53,7 +55,7 @@ public static class Day04
         {
             totalResult += GetAllAccessibleRolls(grid);
         }
-        
+
         return totalResult;
     }
 
@@ -67,7 +69,7 @@ public static class Day04
 
         return adjacentRolls < 4;
     }
-    
+
     private static List<(int row, int col)> PositionsToCheck(int row, int col) =>
     [
         (row - 1, col - 1),
@@ -79,7 +81,7 @@ public static class Day04
         (row + 1, col),
         (row + 1, col + 1)
     ];
-    
-    private static bool IsInBounds(int row, int col, char[][] grid) => 
+
+    private static bool IsInBounds(int row, int col, char[][] grid) =>
         row >= 0 && row < grid.Length && col >= 0 && col < grid[row].Length;
 }

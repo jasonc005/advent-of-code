@@ -1,10 +1,12 @@
+using _2025_CSharp.Helpers;
+
 namespace _2025_CSharp.Solutions;
 
 // Puzzle instructions: https://adventofcode.com/2025/day/3
 public static class Day03
 {
-    private const string InputFile = "Input/day03_input.txt";
-    
+    private static readonly string InputFile = FileUtility.GetFilePathForDay(3);
+
     public static void Run()
     {
         var banks = GetBatteryBanks();
@@ -15,7 +17,7 @@ public static class Day03
         Console.WriteLine($"Max 2-Digit Output Joltage: {totalJoltage2Digits}");
         Console.WriteLine($"Max 12-Digit Output Joltage: {totalJoltage12Digits}");
     }
-    
+
     private static string[] GetBatteryBanks()
     {
         return File.ReadAllLines(InputFile);
@@ -30,7 +32,7 @@ public static class Day03
         while (remainingDigits > 0)
         {
             var largestDigit = '0';
-            
+
             remainingDigits--;
             for (var i = startIndex; i < bank.Length - remainingDigits; i++)
             {
@@ -40,7 +42,7 @@ public static class Day03
             }
             result += largestDigit;
         }
-        
+
         return long.Parse(result);
     }
 }
