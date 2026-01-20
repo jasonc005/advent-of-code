@@ -8,17 +8,14 @@ public static class Day05
     public static void Run()
     {
         var (idRanges, availableIds) = GetIdRangesAndAvailableIds();
-        
-        var idMatchCount = 0;
-        foreach (var id in availableIds)
-        {
-            if (idRanges.Any(range => range.start <= id && id <= range.end))
-                idMatchCount++;
-        }
-        
-        Console.WriteLine($"Fresh Ingredients: {idMatchCount}");
+
+        var freshIngredientsCount = GetFreshIngredientsCount(idRanges, availableIds);
+        var totalFreshIngredientIds = GetTotalFreshIngredientIds(idRanges);
+
+        Console.WriteLine($"Fresh Ingredients: {freshIngredientsCount}");
+        Console.WriteLine($"Total Fresh Ingredient IDs: {totalFreshIngredientIds}");
     }
-    
+
     private static (List<(long start, long end)> IdRanges, List<long> AvailableIds) GetIdRangesAndAvailableIds()
     {
         var idRanges = new List<(long start, long end)>();
@@ -38,5 +35,45 @@ public static class Day05
         }
 
         return (idRanges, availableIds);
+    }
+
+    private static int GetFreshIngredientsCount(List<(long start, long end)> idRanges, List<long> availableIds)
+    {
+        return availableIds.Count(id => idRanges.Any(range => range.start <= id && id <= range.end));
+    }
+
+    private static long GetTotalFreshIngredientIds(List<(long start, long end)> idRanges)
+    {
+        if (!idRanges.Any()) return 0;
+
+        // Sort ranges by start position
+        var sortedRanges = idRanges.OrderBy(r => r.start).ToList();
+
+        long totalCount = 0;
+        long currentStart = sortedRanges[0].start;
+        long currentEnd = sortedRanges[0].end;
+
+        for (int i = 1; i < sortedRanges.Count; i++)
+        {
+            var range = sortedRanges[i];
+
+            if (range.start <= currentEnd + 1)
+            {
+                // Overlapping or adjacent ranges - merge them
+                currentEnd = Math.Max(currentEnd, range.end);
+            }
+            else
+            {
+                // Non-overlapping range - add current range size and start new range
+                totalCount += currentEnd - currentStart + 1;
+                currentStart = range.start;
+                currentEnd = range.end;
+            }
+        }
+
+        // Add the last range
+        totalCount += currentEnd - currentStart + 1;
+
+        return totalCount;
     }
 }
